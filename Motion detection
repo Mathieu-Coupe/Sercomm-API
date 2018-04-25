@@ -1,4 +1,6 @@
- Je vous fais part de mes dernières recherches concernant la caméra Homelive. Notre caméra (comme beaucoup je suppose), réagit à un déclenchement (Trigger) et "joue" un évènement (EVENT).
+curl -s "http://192.168.1.183/adm/set_group.cgi?group=EVENT&event1_entry=is=1|es=0|et=2|acts=httpn:1|ei=0|ea=mp4,5,15,1|en=salon"
+
+Je vous fais part de mes dernières recherches concernant la caméra Homelive. Notre caméra (comme beaucoup je suppose), réagit à un déclenchement (Trigger) et "joue" un évènement (EVENT).
 
     Les évènements sont stockés dans une table EVENT accessible par la commande suivante : http://xxx.xxx.xxx.cam/adm/get_group.cgi?group=EVENT. On obtient :
 
