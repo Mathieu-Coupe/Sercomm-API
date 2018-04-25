@@ -1,0 +1,73 @@
+ Je vous fais part de mes dernières recherches concernant la caméra Homelive. Notre caméra (comme beaucoup je suppose), réagit à un déclenchement (Trigger) et "joue" un évènement (EVENT).
+
+    Les évènements sont stockés dans une table EVENT accessible par la commande suivante : http://xxx.xxx.xxx.cam/adm/get_group.cgi?group=EVENT. On obtient :
+
+[EVENT]
+event_trigger=1
+event1_entry=is=1|es=0,|et=5|acts=op1:0;op2:0;email:0;ftpu:0;im:0;httpn:0;httppost:1;wlled:0;smbc:0;sd:0;op3:0;op4:0;smbc_rec:0;sd_rec:0|ei=0|ea=mp4,5,15,1|en=http
+event2_entry=
+event3_entry=
+event4_entry=
+event5_entry=
+event6_entry=
+event7_entry=
+event8_entry=
+event9_entry=
+event10_entry=
+event_jpeg_fps=5
+
+    Il est donc possible de définir 10 évènements (event1_entry à event10_entry). 1 évènement est composé de 7 champs, certains composés de "sous-champs".
+
+- is= : peut prendre 5 valeurs (de 0 à 4), positionné "par défaut" à 1 - je n'ai pas trouvé son utilité.
+
+- es= : est le "programmateur" (es=event scheduler)
+    - 0 : l'évènement sera "joué à chaque sollicitation, 24h/24, 7j/7 (Always)
+    - 1 : l'évènement sera "joué suivant une programmation par plage horaire et par jour (1=Lundi à 7=Dimanche)
+        par exemple : es=1,1,00:00,23:59;2,00:00,23:59;3,00:00,23:59;4,00:00,23:59;5,12:00,16:59 sera joué du Lundi (1) à Jeudi (4) de 00:00 h à 23:59 h et le Vendredi (5) de 12:00 h à 16:59 h
+    - 2 : l'évènement ne sera jamais "joué (Disabled)
+
+- et= : est le Trigger  (et=event trigger) qui sollicite l'évènement - peut prendre 16 valeurs (de 0 à 15), positionné  à 5 sur Homelive
+    - 0  : Input --> ???
+    - 1  : Input 2 --> ???
+    - 2  : Motion --> déclenchement sur Détection de Mouvements (Windows 1)
+    - 3  : PIR --> déclenchement sur Détection InfraRouge
+    - 4  : Audio --> déclenchement sur Détection Audio
+    - 5  : HTTP --> déclenchement sur requête HTTP
+    - 6  : Periodically --> déclenchement périodique (1 fois/mn au minimum)
+    - 7  : Continuously --> déclenchement en continu
+    - 8  : Input 3 --> ???
+    - 9  : Input 4 --> ???
+    - 10 : Motion 2 --> déclenchement sur Détection de Mouvements (Windows 2)
+    - 11 : Motion 3 --> déclenchement sur Détection de Mouvements (Windows 3)
+    - 12 : Motion 4 --> déclenchement sur Détection de Mouvements (Windows 4)
+    - 13 : Audio 2 --> ???
+    - 14 : Audio 3 --> ???
+    - 15 : Audio 4 --> ???
+
+- acts=op1:0;op2:0;email:0;ftpu:0;im:0;httpn:0;httppost:1;wlled:0;smbc:0;sd:0;op3:0;op4:0;smbc_rec:0;sd_rec:0 est "la réaction de la caméra" face à une sollicitation
+    - acts=op1:0;op2:0 --> non testé
+    - email:0; --> positioné à 1, déclenche un envoi d'email si [EMAIL] est bien configuré. J'ai réussi à envoyer des mails (confirmé dans le log de la caméra), mais je ne les ai jamais reçus (testé pourtant sur 2 bals différentes) - A creuser. Par contre, l'envoi de mail avec pièce jointe (vidéo) échoue systématiquement.
+    - ftpu:0; --> positioné à 1, déclenche un transfert de fichier si [FTP] est bien configuré - voir fil dédié - ça fonctionne à 100%
+    - im:0; --> non testé - envoi vers messagerie instantanée ??? aucune idée - aucune trace dans les API.
+    - httpn:0; --> non testé
+    - httppost:1; --> positioné à 1, déclenche une requête HTTPPOST - c'est comme cela que Homelive enregistre les vidéos dans le Cloud (voir [HTTP_EVENT])
+    - wlled:0; --> non testé
+    - smbc:0; --> non testé
+    - sd:0; --> non testé
+    - op3:0; --> non testé
+    - op4:0; --> non testé
+    - smbc_rec:0; --> non testé
+    - sd_rec:0 --> non testé - enregistrement sur carte SD ??? - je n'ai pas ouvert ma caméra pour confirmer la présence du slot SDCARD
+
+- ei= : est l'intervalle de temps (en mn) avant prise en compte du prochain évènement (ei=event interval)
+- ea= : est l'action "1ère" de la caméra face à un sollicitation (ea=event action)
+    - mp4 : est le conteneur du fichier enregistré
+        - mp4 : enregistrement d'un fichier vidéo de 20 s max SANS l'audio
+        - avi : enregistrement d'un fichier vidéo de 20 s max AVEC l'audio - attention néanmoins, ce fichier n'est plus lisible avec l'appli. mobile Homelive - non testé avec l'interface Web Homelive
+        - jpg : est pris en compte, mais je n'ai jamais pu "fabriquer" une image valide ...
+    - 5 : temps d'enregistrement avant le déclenchement de la vidéo - peut varier de 0 à 20, la durée totale de la vidéo n'excédant jamais 20s (complément à 20 du "après" ci-dessous)
+    - 15 : temps d'enregistrement après le déclenchement de la vidéo - peut varier de 0 à 20, la durée totale de la vidéo n'excédant jamais 20s (complément à 20 du "avant" précédent)
+    - 1 - je n'ai pas trouvé son utilité
+- en= : est le nom de l'évènement donné par l'utilisateur, visible sur interface Web "Trigger & Recording" - (en=event name)
+
+Voici donc le descriptif des évènements de la caméra Homelive.
